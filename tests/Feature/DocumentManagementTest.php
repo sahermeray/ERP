@@ -149,6 +149,41 @@ it('stores documents in the selected register with server-controlled direction a
     $this->get(route('documents.show', $outgoing))->assertOk();
 });
 
+it('translates stored document status and direction labels without changing their values', function () {
+    $user = User::factory()->create();
+    $organizationId = createOrganizationForDocumentTests('Localization Registry');
+    assignDocumentTestUserToOrganization($user, $organizationId);
+
+    $this->actingAs($user)
+        ->post(route('locale.update'), ['locale' => 'ar'])
+        ->assertRedirect();
+
+    $this->post(route('documents.store', 'incoming'), [
+        'reference_number' => 'IN-2026-LOC-001',
+        'subject' => 'Localization test document',
+        'priority' => 'normal',
+        'status' => 'closed',
+    ])->assertRedirect();
+
+    $document = Document::query()->where('reference_number', 'IN-2026-LOC-001')->firstOrFail();
+    $this->assertDatabaseHas('documents', [
+        'id' => $document->id,
+        'direction' => 'incoming',
+        'status' => 'closed',
+    ]);
+
+    $this->get(route('documents.show', $document))
+        ->assertOk()
+        ->assertSee('وارد')
+        ->assertSee('مغلق')
+        ->assertSee('<html lang="ar" dir="rtl">', false);
+
+    $this->get(route('documents.archive'))
+        ->assertOk()
+        ->assertSee($document->reference_number)
+        ->assertSee('مغلق');
+});
+
 it('stores multiple private attachments on a document', function () {
     Storage::fake('local');
 

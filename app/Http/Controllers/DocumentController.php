@@ -69,7 +69,7 @@ class DocumentController extends Controller
         abort_unless(in_array($direction, ['incoming', 'outgoing'], true), 404);
 
         $organization = $request->user()->currentOrganization();
-        abort_unless($organization, 403, 'An active organization membership is required.');
+        abort_unless($organization, 403, __('documents.organization_required'));
 
         $data = $this->validatedDocument($request, $organization, $direction);
 
@@ -89,7 +89,7 @@ class DocumentController extends Controller
         });
         $this->storeAttachments($document, $request->file('attachments', []), $request->user()->id);
 
-        return redirect()->route('documents.show', $document)->with('status', 'Document registered successfully.');
+        return redirect()->route('documents.show', $document)->with('status', __('documents.created'));
     }
 
     public function show(Request $request, int $document): View
@@ -117,7 +117,7 @@ class DocumentController extends Controller
     {
         $record = $this->findDocument($request, $document);
         $organization = $request->user()->currentOrganization();
-        abort_unless($organization, 403, 'An active organization membership is required.');
+        abort_unless($organization, 403, __('documents.organization_required'));
 
         $data = $this->validatedDocument($request, $organization, $record->direction, $record);
 
@@ -129,7 +129,7 @@ class DocumentController extends Controller
         });
         $this->storeAttachments($record, $request->file('attachments', []), $request->user()->id);
 
-        return redirect()->route('documents.show', $record)->with('status', 'Document updated successfully.');
+        return redirect()->route('documents.show', $record)->with('status', __('documents.updated'));
     }
 
     public function openAttachment(Request $request, int $document, int $attachment): BinaryFileResponse
@@ -159,13 +159,13 @@ class DocumentController extends Controller
     public function deleteAttachment(Request $request, int $document, int $attachment): RedirectResponse
     {
         $record = $this->findDocument($request, $document);
-        abort_if($record->status === 'closed' || $record->archive, 403, 'Attachments cannot be removed from archived documents.');
+        abort_if($record->status === 'closed' || $record->archive, 403, __('documents.archived_attachment_locked'));
         $file = $this->findAttachment($record, $attachment);
 
         Storage::disk('local')->delete($file->storage_path);
         $file->delete();
 
-        return redirect()->route('documents.show', $record)->with('status', 'Attachment deleted.');
+        return redirect()->route('documents.show', $record)->with('status', __('documents.attachment_deleted'));
     }
 
     public function archive(Request $request): View
@@ -318,7 +318,7 @@ class DocumentController extends Controller
     {
         foreach ($files as $file) {
             $path = $file->store('document-attachments/'.$document->organization_id.'/'.$document->id, 'local');
-            abort_unless($path, 500, 'The attachment could not be stored.');
+            abort_unless($path, 500, __('documents.attachment_store_failed'));
 
             $document->attachments()->create([
                 'uploaded_by' => $userId,

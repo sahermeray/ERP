@@ -36,7 +36,7 @@ class DepartmentController extends Controller
         $organization = $this->currentOrganization($request);
         $organization->departments()->create($this->validatedDepartment($request, $organization));
 
-        return redirect()->route('admin.departments.index')->with('status', 'Department added.');
+        return redirect()->route('admin.departments.index')->with('status', __('administration.department_added'));
     }
 
     public function edit(Request $request, int $department): View
@@ -55,7 +55,7 @@ class DepartmentController extends Controller
         $record = $organization->departments()->findOrFail($department);
         $record->update($this->validatedDepartment($request, $organization, $record));
 
-        return redirect()->route('admin.departments.index')->with('status', 'Department updated.');
+        return redirect()->route('admin.departments.index')->with('status', __('administration.department_updated'));
     }
 
     public function updateStatus(Request $request, int $department): RedirectResponse
@@ -65,7 +65,7 @@ class DepartmentController extends Controller
         $data = $request->validate(['is_active' => ['required', 'boolean']]);
         $record->update($data);
 
-        return redirect()->route('admin.departments.index')->with('status', 'Department status updated.');
+        return redirect()->route('admin.departments.index')->with('status', __('administration.department_status_updated'));
     }
 
     public function destroy(Request $request, int $department): RedirectResponse
@@ -78,13 +78,13 @@ class DepartmentController extends Controller
             || $record->sendingDocuments()->exists()
             || $record->receivingDocuments()->exists()) {
             return redirect()->route('admin.departments.index')->withErrors([
-                'department' => 'This department is assigned to a user or document and cannot be deleted. Deactivate it instead.',
+                'department' => __('administration.department_in_use'),
             ]);
         }
 
         $record->delete();
 
-        return redirect()->route('admin.departments.index')->with('status', 'Department deleted.');
+        return redirect()->route('admin.departments.index')->with('status', __('administration.department_deleted'));
     }
 
     private function currentOrganization(Request $request): Organization

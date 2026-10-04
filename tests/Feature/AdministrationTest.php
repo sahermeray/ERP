@@ -74,6 +74,31 @@ it('lets the configured administrator update the organization profile and see it
     $this->get(route('admin.organization.edit'))->assertOk()->assertSee('Central Public Records Office');
 });
 
+it('localizes administration screens without translating stored organization or department names', function () {
+    [$organization, $admin] = createAdministrationAdmin();
+    $department = $organization->departments()->create(['name' => 'Records Unit', 'is_active' => true]);
+    $user = User::factory()->create(['name' => 'Records Clerk']);
+    assignAdministrationMembership($organization, $user, ['department_id' => $department->id]);
+
+    $this->actingAs($admin)->withSession(['locale' => 'ar']);
+
+    $this->get(route('admin.organization.edit'))
+        ->assertOk()
+        ->assertSee('المؤسسة')
+        ->assertSee('Administration Office')
+        ->assertSee('<html lang="ar" dir="rtl">', false);
+
+    $this->get(route('admin.departments.index'))
+        ->assertOk()
+        ->assertSee('الأقسام')
+        ->assertSee('Records Unit');
+
+    $this->get(route('admin.users.index'))
+        ->assertOk()
+        ->assertSee('المستخدمون')
+        ->assertSee('Records Clerk');
+});
+
 it('manages departments without deleting departments referenced by users or documents', function () {
     [$organization, $admin] = createAdministrationAdmin();
     $departmentPayload = [

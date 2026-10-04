@@ -76,3 +76,46 @@ it('logs out the user and invalidates the session', function () {
 
     $this->assertGuest();
 });
+
+it('switches and persists the interface locale and text direction', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('locale.update'), ['locale' => 'ar'])
+        ->assertRedirect();
+
+    $this->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('<html lang="ar" dir="rtl">', false)
+        ->assertSee('لوحة التحكم')
+        ->assertSee('الأرشيف');
+
+    $this->get(route('documents.archive'))
+        ->assertOk()
+        ->assertSee('<html lang="ar" dir="rtl">', false);
+
+    $this->post(route('locale.update'), ['locale' => 'en'])
+        ->assertRedirect();
+
+    $this->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('<html lang="en" dir="ltr">', false)
+        ->assertSee('Dashboard')
+        ->assertSee('Archive');
+});
+
+it('rejects unsupported interface locales', function () {
+    $this->actingAs(User::factory()->create())
+        ->post(route('locale.update'), ['locale' => 'fr'])
+        ->assertSessionHasErrors('locale');
+});
+
+it('localizes authentication validation messages', function () {
+    $this->withSession(['locale' => 'ar'])
+        ->from('/login')
+        ->post('/login', ['email' => '', 'password' => ''])
+        ->assertSessionHasErrors([
+            'email' => 'حقل البريد الإلكتروني مطلوب.',
+            'password' => 'حقل كلمة المرور مطلوب.',
+        ]);
+});

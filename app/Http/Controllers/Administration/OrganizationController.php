@@ -30,7 +30,7 @@ class OrganizationController extends Controller
 
         $organization->update($data);
 
-        return redirect()->route('admin.organization.edit')->with('status', 'Organization information saved.');
+        return redirect()->route('admin.organization.edit')->with('status', __('administration.organization_saved'));
     }
 
     private function currentOrganization(Request $request): Organization

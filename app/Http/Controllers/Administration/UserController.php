@@ -53,7 +53,7 @@ class UserController extends Controller
         ]);
         $this->syncAdminRole($membership, $request->string('role')->toString(), $request->user()->id);
 
-        return redirect()->route('admin.users.index')->with('status', 'User added to the organization.');
+        return redirect()->route('admin.users.index')->with('status', __('administration.user_added'));
     }
 
     public function edit(Request $request, int $user): View
@@ -86,13 +86,13 @@ class UserController extends Controller
 
         if ($isBootstrapAdmin && (! $willRemainAdmin || $request->input('email') !== $membership->user->email)) {
             return back()->withInput()->withErrors([
-                'role' => 'The configured bootstrap administrator cannot be renamed, deactivated, or demoted.',
+                'role' => __('administration.bootstrap_admin_locked'),
             ]);
         }
 
         if ($isAdminRole && ! $willRemainAdmin && ! $this->anotherActiveAdministratorExists($organization, $membership)) {
             return back()->withInput()->withErrors([
-                'role' => 'At least one active administrator must remain in the organization.',
+                'role' => __('administration.active_admin_required'),
             ]);
         }
 
@@ -104,7 +104,7 @@ class UserController extends Controller
         $membership->update($membershipData);
         $this->syncAdminRole($membership, $roleSlug, $request->user()->id);
 
-        return redirect()->route('admin.users.index')->with('status', 'User updated.');
+        return redirect()->route('admin.users.index')->with('status', __('administration.user_updated'));
     }
 
     private function currentOrganization(Request $request): Organization

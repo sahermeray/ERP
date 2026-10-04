@@ -18,7 +18,7 @@
     --green: #245c4b;
     --green-dark: #194638;
     --red: #a33c35;
-    font-family: 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+    font-family: 'Avenir Next', Avenir, 'Noto Sans Arabic', 'Geeza Pro', 'Segoe UI', sans-serif;
     color: var(--ink);
     background: var(--canvas);
 }
@@ -236,7 +236,7 @@ input {
     gap: 11px;
     margin-top: 22px;
     border: 1px solid #e2bdb8;
-    border-left: 3px solid var(--red);
+    border-inline-start: 3px solid var(--red);
     background: #fff7f5;
     padding: 12px;
     color: #6f302b;
@@ -263,7 +263,7 @@ input {
 
 .form-alert ul {
     margin: 0;
-    padding-left: 16px;
+    padding-inline-start: 16px;
 }
 
 .security-note {
@@ -425,14 +425,41 @@ input {
     margin: 0;
 }
 
+.locale-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.locale-form select,
+.locale-form button {
+    min-height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--paper);
+    padding: 0 7px;
+    color: var(--ink);
+    font: inherit;
+    font-size: 11px;
+}
+
+.locale-form button {
+    cursor: pointer;
+}
+
+.locale-form button:hover {
+    border-color: var(--green);
+    color: var(--green-dark);
+}
+
 .records-user .user-name {
     color: var(--ink);
     font-weight: 650;
 }
 
 .organization-name {
-    border-right: 1px solid var(--line);
-    padding-right: 15px;
+    border-inline-end: 1px solid var(--line);
+    padding-inline-end: 15px;
 }
 
 .records-nav {
@@ -468,8 +495,8 @@ input {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
-    border-left: 1px solid var(--line);
-    padding-left: 20px;
+    border-inline-start: 1px solid var(--line);
+    padding-inline-start: 20px;
     color: var(--muted);
     font-size: 10px;
     font-weight: 700;
@@ -479,7 +506,7 @@ input {
 .nav-logout {
     display: flex;
     align-items: center;
-    margin-left: auto;
+    margin-inline-start: auto;
 }
 
 .nav-logout button {
@@ -589,7 +616,7 @@ input {
     gap: 13px;
     margin-top: 27px;
     border: 1px solid #d8c89f;
-    border-left: 3px solid #8b6d2d;
+    border-inline-start: 3px solid #8b6d2d;
     background: #fffdf7;
     padding: 17px 18px;
 }
@@ -638,7 +665,7 @@ input {
     min-height: 155px;
     align-content: start;
     gap: 9px;
-    border-right: 1px solid var(--line);
+    border-inline-end: 1px solid var(--line);
     padding: 19px 22px;
     color: var(--ink);
     text-decoration: none;
@@ -646,7 +673,7 @@ input {
 }
 
 .summary-item:last-child {
-    border-right: 0;
+    border-inline-end: 0;
 }
 
 .summary-item:hover {
@@ -879,7 +906,7 @@ input {
 .document-table {
     width: 100%;
     border-collapse: collapse;
-    text-align: left;
+    text-align: start;
 }
 
 .document-table th {
@@ -908,7 +935,7 @@ input {
 
 .document-table th:first-child,
 .document-table td:first-child {
-    padding-left: 18px;
+    padding-inline-start: 18px;
 }
 
 .reference-cell {
@@ -987,11 +1014,11 @@ input {
 }
 
 .row-actions {
-    text-align: right;
+    text-align: end;
 }
 
 .row-actions a {
-    margin-left: 9px;
+    margin-inline-start: 9px;
     color: #315c4d;
     font-size: 11px;
     font-weight: 650;
@@ -1000,7 +1027,7 @@ input {
 
 .row-actions form {
     display: inline;
-    margin-left: 9px;
+    margin-inline-start: 9px;
 }
 
 .row-actions button {
@@ -1067,7 +1094,7 @@ input {
     height: 30px;
     align-items: center;
     justify-content: center;
-    margin-left: 3px;
+    margin-inline-start: 3px;
     border: 1px solid var(--line);
     border-radius: 2px;
     background: #fff;
@@ -1129,7 +1156,7 @@ input {
 }
 
 .direction-tag {
-    margin-left: auto;
+    margin-inline-start: auto;
     border-color: #bad0c4;
     background: #edf5ef;
     color: var(--green-dark);
@@ -1346,7 +1373,7 @@ input {
 .success-banner {
     margin-bottom: 18px;
     border: 1px solid #bdd2c3;
-    border-left: 3px solid #4d805b;
+    border-inline-start: 3px solid #4d805b;
     background: #f0f7f1;
     padding: 11px 14px;
     color: #365b40;
@@ -1381,7 +1408,12 @@ input {
     }
 
     .agency-header {
+        flex-wrap: wrap;
         margin-bottom: 18px;
+    }
+
+    .agency-header .locale-form {
+        width: 100%;
     }
 
     .login-panel {
@@ -1430,6 +1462,10 @@ input {
         gap: 8px;
     }
 
+    .records-user .locale-form {
+        flex: 0 0 auto;
+    }
+
     .organization-name {
         display: none;
     }
@@ -1467,7 +1503,7 @@ input {
 
     .summary-item {
         min-height: 125px;
-        border-right: 0;
+        border-inline-end: 0;
         border-bottom: 1px solid var(--line);
     }
 
@@ -1532,6 +1568,10 @@ input {
         flex-wrap: wrap;
         gap: 14px;
     }
+}
+
+html[dir='rtl'] .register-links a:hover .register-arrow {
+    transform: translateX(-3px);
 }
 
 @media (prefers-reduced-motion: reduce) {
